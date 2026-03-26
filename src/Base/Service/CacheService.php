@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Base\Service;
 
-use App\Exception\CacheException;
+use App\Base\Exception\CacheException;
 use App\Software;
 use Monolog\Logger;
 

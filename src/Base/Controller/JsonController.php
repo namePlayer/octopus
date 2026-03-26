@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Base\Controller;
 
-use App\Http\JsonResponse;
+use App\Base\Http\JsonResponse;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\RequestInterface;
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Exception\EnvironmentException;
+use App\Base\Exception\EnvironmentException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;

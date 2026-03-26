@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http;
+namespace App\Base\Http;
 
 use Laminas\Diactoros\Response\JsonResponse as LaminasJsonResponse;
-
 use function is_null;
 
 class JsonResponse extends LaminasJsonResponse

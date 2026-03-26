@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Base\Controller;
 
-use App\Http\HtmlResponse;
+use App\Base\Http\HtmlResponse;
 use Laminas\Diactoros\Response;
 use League\Plates\Engine;
 use Psr\Http\Message\RequestInterface;

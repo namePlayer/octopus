@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Base\Command;
 
 use App\Software;
 use Symfony\Component\Console\Attribute\AsCommand;

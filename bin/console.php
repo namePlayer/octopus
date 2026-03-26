@@ -6,6 +6,6 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 $console = new Application();
 
-$console->add(new \App\Command\CacheClearCommand());
+$console->add(new \App\Base\Command\CacheClearCommand());
 
 $console->run();

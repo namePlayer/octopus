@@ -7,15 +7,15 @@ $container = new Container();
 #
 # Controllers
 #
-$container->add(\App\Controller\IndexController::class)
+$container->add(\App\Base\Controller\IndexController::class)
     ->addArgument(\League\Plates\Engine::class);
 
-$container->add(\App\Controller\JsonController::class);
+$container->add(\App\Base\Controller\JsonController::class);
 
 #
 # Services
 #
-$container->add(\App\Service\CacheService::class)
+$container->add(\App\Base\Service\CacheService::class)
     ->addArgument(\Monolog\Logger::class);
 
 #
@@ -33,7 +33,7 @@ $container->add(\Envms\FluentPDO\Query::class)
 $container->add(\Monolog\Logger::class)
     ->addArgument('app')
     ->addMethodCall('pushHandler',
-        [(new \App\Factory\LoggerFactory())->createPushHandler()]
+        [(new \App\Base\Factory\LoggerFactory())->createPushHandler()]
     );
 
 $container->add(League\Plates\Engine::class)

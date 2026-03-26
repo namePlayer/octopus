@@ -11,9 +11,9 @@ $request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals(
 );
 
 /* @var Router $router */
-$router->get('/', 'App\Controller\IndexController::load');
+$router->get('/', 'App\Base\Controller\IndexController');
 
-$router->get('/json', 'App\Controller\IndexController::load');
+$router->get('/json', 'App\Base\Controller\IndexController');
 
 
 $response = $router->dispatch($request);
