@@ -16,4 +16,9 @@ class PasswordService
         return password_verify($plainPassword, $hashedPassword);
     }
 
+    public function generatePassword(int $length = 8): string
+    {
+        return bin2hex(random_bytes($length / 2));
+    }
+
 }

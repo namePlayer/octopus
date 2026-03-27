@@ -5,6 +5,7 @@ namespace App\Authentication\Service;
 
 use App\Authentication\DTO\CreateAccountDTO;
 use App\Authentication\Exception\AccountCreationFailedException;
+use App\Authentication\Exception\AccountEmailIsAlreadyUsedException;
 use App\Authentication\Exception\AccountInsertIntoDatabaseFailedException;
 use App\Authentication\Model\Account;
 
@@ -17,9 +18,13 @@ class AuthenticationService
     {
     }
 
-    public function register(CreateAccountDTO $createAccountDTO): Account
+    public function register(CreateAccountDTO $createAccountDTO, bool $throwDuplicateEmailError = false): Account
     {
         $emailAssociatedAccount = $this->accountService->getUserByEmail($createAccountDTO->email);
+        if($throwDuplicateEmailError && $emailAssociatedAccount instanceof Account) {
+            throw new AccountEmailIsAlreadyUsedException();
+        }
+
         if($emailAssociatedAccount instanceof Account){
             return $emailAssociatedAccount;
         }
