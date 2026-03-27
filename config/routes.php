@@ -11,10 +11,15 @@ $request = \Laminas\Diactoros\ServerRequestFactory::fromGlobals(
 );
 
 /* @var Router $router */
-$router->get('/', 'App\Base\Controller\IndexController');
+$router->get('/', 'App\Base\Controller\IndexController::load');
 
-$router->get('/json', 'App\Base\Controller\IndexController');
+$router->get('/json', 'App\Base\Controller\IndexController::load');
+
+$router->get('/authentication/registration', 'App\Authentication\Controller\RegistrationController::viewRegisterForm')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+$router->post('/authentication/registration', 'App\Authentication\Controller\RegistrationController::register')
+    ->setHost($_ENV['SOFTWARE_HOST']);
 
 
 $response = $router->dispatch($request);
-(new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);
+new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter()->emit($response);

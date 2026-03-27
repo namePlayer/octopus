@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace App\Authentication\Model;
 
+use App\Software;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+
 class Account
 {
 
@@ -14,12 +18,12 @@ class Account
             $this->id = $value;
         }
     }
-    public string $slug {
+    public UuidInterface $uuid {
         get {
-            return $this->slug;
+            return $this->uuid;
         }
         set {
-            $this->slug = $value;
+            $this->uuid = $value;
         }
     }
     public string $email {
@@ -27,7 +31,7 @@ class Account
             return $this->email;
         }
         set {
-            $this->email = $value;
+            $this->email = trim($value);
         }
     }
     public string $password {
@@ -35,7 +39,7 @@ class Account
             return $this->password;
         }
         set {
-            $this->password = $value;
+            $this->password = trim($value);
         }
     }
     public string $firstname {
@@ -43,7 +47,7 @@ class Account
             return $this->firstname;
         }
         set {
-            $this->firstname = $value;
+            $this->firstname = trim($value);
         }
     }
     public string $lastname {
@@ -51,15 +55,15 @@ class Account
             return $this->lastname;
         }
         set {
-            $this->lastname = $value;
+            $this->lastname = trim($value);
         }
     }
-    public \DateTime $registered {
+    public \DateTime $registeredAt {
         get {
-            return $this->registered;
+            return $this->registeredAt;
         }
         set {
-            $this->registered = $value;
+            $this->registeredAt = $value;
         }
     }
 
@@ -69,11 +73,12 @@ class Account
         if ($includeId) {
             $array['id'] = $this->id;
         }
-        $array['slug'] = $this->slug;
+        $array['uuid'] = $this->uuid->toString();
         $array['email'] = $this->email;
+        $array['password'] = $this->password;
         $array['firstname'] = $this->firstname;
         $array['lastname'] = $this->lastname;
-        $array['registered'] = $this->registered;
+        $array['registeredAt'] = $this->registeredAt->format(Software::DB_DATETIME_FORMAT);
         return $array;
     }
 
@@ -81,11 +86,12 @@ class Account
     {
         $self = new self();
         $self->id = $data['id'];
-        $self->slug = $data['slug'];
+        $self->uuid = Uuid::fromString($data['uuid']);
         $self->email = $data['email'];
+        $self->password = $data['password'];
         $self->firstname = $data['firstname'];
         $self->lastname = $data['lastname'];
-        $self->registered = $data['registered'];
+        $self->registeredAt = new \DateTime($data['registeredAt']);
         return $self;
     }
 

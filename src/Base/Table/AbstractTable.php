@@ -2,7 +2,9 @@
 
 namespace App\Base\Table;
 
-use Envms\FluentPDO\Query;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
+use Monolog\Logger;
 use ReflectionClass;
 
 class AbstractTable
@@ -10,9 +12,9 @@ class AbstractTable
 
     private string $table;
 
-    public function __construct(public Query $query)
+    public function __construct(public readonly Connection $query, public readonly Logger $logger)
     {
-        $this->table = substr((new ReflectionClass($this))->getShortName(), 0, -5);
+        $this->table = substr(new ReflectionClass($this)->getShortName(), 0, -5);
     }
 
     public function getTableName(): string
@@ -20,17 +22,10 @@ class AbstractTable
         return $this->table;
     }
 
-    public function findById(int $id): bool|array
-    {
-        return $this->query->from($this->table)
-            ->where('id', $id)
-            ->fetch();
-    }
-
     public function findAll(): bool|array
     {
-        return $this->query->from($this->table)
-            ->fetchAll();
+        $queryBuilder = new QueryBuilder($this->query);
+        return $queryBuilder->from($this->getTableName())->fetchAllAssociative();
     }
 
 }

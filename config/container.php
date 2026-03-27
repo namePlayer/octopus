@@ -12,23 +12,42 @@ $container->add(\App\Base\Controller\IndexController::class)
 
 $container->add(\App\Base\Controller\JsonController::class);
 
+$container->add(\App\Authentication\Controller\RegistrationController::class)
+    ->addArgument(\League\Plates\Engine::class)
+    ->addArgument(\App\Authentication\Validator\RegistrationValueValidator::class)
+    ->addArgument(\App\Authentication\Service\AuthenticationService::class);
+
 #
 # Services
 #
+$container->add(\App\Authentication\Service\PasswordService::class);
+
+$container->add(\App\Authentication\Service\AccountService::class)
+    ->addArgument(\App\Authentication\Service\PasswordService::class)
+    ->addArgument(\App\Authentication\Table\AccountTable::class);
+
+$container->add(\App\Authentication\Service\AuthenticationService::class)
+    ->addArgument(\App\Authentication\Service\AccountService::class);
+
 $container->add(\App\Base\Service\CacheService::class)
     ->addArgument(\Monolog\Logger::class);
 
 #
 # Repositories
 #
+$container->add(\App\Authentication\Table\AccountTable::class)
+    ->addArgument(\Doctrine\DBAL\Connection::class)
+    ->addArgument(\Monolog\Logger::class);
+
+#
+# Validators
+#
+$container->add(\App\Authentication\Validator\RegistrationValueValidator::class);
 
 #
 # Dependencies
 #
-$container->add(\Envms\FluentPDO\Query::class)
-    ->addArgument('mysql:host='.$_ENV['DB_HOST'].';dbname='.$_ENV['DB_NAME'])
-    ->addArgument($_ENV['DB_USER'])
-    ->addArgument($_ENV['DB_PASSWORD']);
+$container->add(\Doctrine\DBAL\Connection::class, new \App\Base\Factory\DatabaseFactory()->connect());
 
 $container->add(\Monolog\Logger::class)
     ->addArgument('app')

@@ -23,6 +23,10 @@ class Software
     public const LOG_FILENAME = 'app.log';
     public const CONSOLE_LOG_FILENAME = 'console.log';
 
+    public const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
+
+    public const int MAXIMUM_EMAIL_LENGTH = 255;
+
     /**
      * @throws EnvironmentException
      */
