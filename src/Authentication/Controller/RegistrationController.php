@@ -41,7 +41,11 @@ class RegistrationController
     public function register(ServerRequestInterface $request): ResponseInterface
     {
         $data = $request->getParsedBody();
-        $registerDTO = new CreateAccountDTO($data['registrationEmail'], $data['registrationPassword'], $data['registrationRepeatPassword']);
+        $registerDTO = new CreateAccountDTO(
+            $data['registrationEmail'] ?? '',
+            $data['registrationPassword'] ?? '',
+            $data['registrationRepeatPassword'] ?? '',
+            isset($data['registrationAcceptTerms']));
 
         try {
             $this->registrationValueValidator->validate($registerDTO);

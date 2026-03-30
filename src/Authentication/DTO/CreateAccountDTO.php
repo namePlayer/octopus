@@ -12,6 +12,7 @@ class CreateAccountDTO
         public readonly string $password,
         #[\SensitiveParameter]
         public readonly string $repeatPassword,
+        public readonly bool $acceptedTerms
     )
     {
     }

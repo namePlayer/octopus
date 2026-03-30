@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Authentication\Validator;
 
 use App\Authentication\DTO\CreateAccountDTO;
+use App\Authentication\Exception\AccountDoesNotAcceptTermsException;
 use App\Authentication\Exception\AccountEmailExceedsMaximumLengthException;
 use App\Authentication\Exception\AccountEmailIsInvalidException;
 use App\Authentication\Exception\PasswordRepeatDoesNotMatchException;
@@ -32,6 +33,11 @@ class RegistrationValueValidator
         if($registerAccountDTO->password !== $registerAccountDTO->repeatPassword)
         {
             throw new PasswordRepeatDoesNotMatchException();
+        }
+
+        if($registerAccountDTO->acceptedTerms === false)
+        {
+            throw new AccountDoesNotAcceptTermsException();
         }
 
     }
