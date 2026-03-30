@@ -24,7 +24,7 @@ class CsrfPlatesExtension implements ExtensionInterface
     public function generateCsrfField(string $formName): string
     {
         $token = $this->csrfProtectionService->generateCsrfTokenForForm($formName);
-        return '<input type="hidden" name="csrf_'.$formName.'" value="' . $token . '">';
+        return '<input type="hidden" name="'.$token->fieldName.'" value="' . $token->token . '">';
     }
 
 }

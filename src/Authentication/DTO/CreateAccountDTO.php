@@ -8,7 +8,9 @@ class CreateAccountDTO
 
     public function __construct(
         public readonly string $email,
+        #[\SensitiveParameter]
         public readonly string $password,
+        #[\SensitiveParameter]
         public readonly string $repeatPassword,
     )
     {
