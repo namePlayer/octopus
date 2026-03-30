@@ -34,7 +34,6 @@ class Account
             $this->email = trim($value);
         }
     }
-    #[\SensitiveParameter]
     public string $password {
         get {
             return $this->password;

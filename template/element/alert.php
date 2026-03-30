@@ -10,7 +10,7 @@
     <div class="alert alert-success" role="alert">
         <?= $alert['message'] ?>
     </div>
-<?php elseif ($alert['type'] == 'danger') : ?>
+<?php elseif ($alert['type'] == 'danger' || $alert['type'] == 'error') : ?>
     <div class="alert alert-danger" role="alert">
         <?= $alert['message'] ?>
     </div>

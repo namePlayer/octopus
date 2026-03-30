@@ -29,7 +29,7 @@ class CsrfProtectionService
 
     public function validateCsrfTokenForForm(string $form): void
     {
-        if(!isset($_SESSION['csrfTokens'][$form])) {
+        if(!isset($_SESSION['csrfTokens'][$form]) || !isset($_POST['csrf_'.$form])) {
             $this->logger->warning('Looking for CSRF Token but not found for form: '.$form);
             throw new CsrfCheckFailedException();
         }

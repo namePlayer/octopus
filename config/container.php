@@ -20,7 +20,8 @@ $container->add(\App\Authentication\Controller\RegistrationController::class)
 
 $container->add(\App\Authentication\Controller\LoginController::class)
     ->addArgument(\League\Plates\Engine::class)
-    ->addArgument(\App\Authentication\Service\AuthenticationService::class);
+    ->addArgument(\App\Authentication\Service\AuthenticationService::class)
+    ->addArgument(\App\Base\Service\CsrfProtectionService::class);
 
 #
 # Services
@@ -32,7 +33,9 @@ $container->add(\App\Authentication\Service\AccountService::class)
     ->addArgument(\App\Authentication\Table\AccountTable::class);
 
 $container->add(\App\Authentication\Service\AuthenticationService::class)
-    ->addArgument(\App\Authentication\Service\AccountService::class);
+    ->addArgument(\App\Authentication\Service\AccountService::class)
+    ->addArgument(\App\Authentication\Service\PasswordService::class)
+    ->addArgument(\Monolog\Logger::class);
 
 $container->add(\App\Base\Service\CacheService::class)
     ->addArgument(\Monolog\Logger::class);
