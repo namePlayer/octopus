@@ -15,6 +15,11 @@ $container->add(\App\Base\Controller\JsonController::class);
 $container->add(\App\Authentication\Controller\RegistrationController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\App\Authentication\Validator\RegistrationValueValidator::class)
+    ->addArgument(\App\Authentication\Service\AuthenticationService::class)
+    ->addArgument(\App\Base\Service\CsrfProtectionService::class);
+
+$container->add(\App\Authentication\Controller\LoginController::class)
+    ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\App\Authentication\Service\AuthenticationService::class);
 
 #
@@ -30,6 +35,9 @@ $container->add(\App\Authentication\Service\AuthenticationService::class)
     ->addArgument(\App\Authentication\Service\AccountService::class);
 
 $container->add(\App\Base\Service\CacheService::class)
+    ->addArgument(\Monolog\Logger::class);
+
+$container->add(\App\Base\Service\CsrfProtectionService::class)
     ->addArgument(\Monolog\Logger::class);
 
 #
@@ -52,13 +60,17 @@ $container->add(\Doctrine\DBAL\Connection::class, new \App\Base\Factory\Database
 $container->add(\Monolog\Logger::class)
     ->addArgument('app')
     ->addMethodCall('pushHandler',
-        [(new \App\Base\Factory\LoggerFactory())->createPushHandler()]
+        [new \App\Base\Factory\LoggerFactory()->createPushHandler()]
     );
 
+$container->add(\App\Base\PlatesExtension\CsrfPlatesExtension::class)
+    ->addArgument(\App\Base\Service\CsrfProtectionService::class);
+
 $container->add(League\Plates\Engine::class)
-    ->addArgument(__DIR__.'/../template');
+    ->addArgument(__DIR__.'/../template')
+    ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\CsrfPlatesExtension::class]);
 
 $responseFactory = (new \Laminas\Diactoros\ResponseFactory());
-$jsonStrategy = (new \League\Route\Strategy\JsonStrategy($responseFactory))->setContainer($container);
-$applicationStrategy = (new \League\Route\Strategy\ApplicationStrategy())->setContainer($container);
-$router = (new \League\Route\Router())->setStrategy($applicationStrategy);
+$jsonStrategy = new \League\Route\Strategy\JsonStrategy($responseFactory)->setContainer($container);
+$applicationStrategy = new \League\Route\Strategy\ApplicationStrategy()->setContainer($container);
+$router = new \League\Route\Router()->setStrategy($applicationStrategy);

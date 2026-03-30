@@ -6,12 +6,15 @@ namespace App\Authentication\Controller;
 use App\Authentication\DTO\CreateAccountDTO;
 use App\Authentication\Exception\AccountCreationFailedException;
 use App\Authentication\Exception\AccountEmailExceedsMaximumLengthException;
+use App\Authentication\Exception\AccountEmailIsAlreadyUsedException;
 use App\Authentication\Exception\AccountEmailIsInvalidException;
 use App\Authentication\Exception\PasswordRepeatDoesNotMatchException;
 use App\Authentication\Exception\PasswordToShortException;
 use App\Authentication\Service\AuthenticationService;
 use App\Authentication\Validator\RegistrationValueValidator;
+use App\Base\Exception\CsrfCheckFailedException;
 use App\Base\Http\HtmlResponse;
+use App\Base\Service\CsrfProtectionService;
 use League\Plates\Engine;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,6 +28,7 @@ class RegistrationController
         private readonly Engine $template,
         private readonly RegistrationValueValidator $registrationValueValidator,
         private readonly AuthenticationService $authenticationService,
+        private readonly CsrfProtectionService $csrfProtectionService
     )
     {
     }
@@ -41,6 +45,7 @@ class RegistrationController
 
         try {
             $this->registrationValueValidator->validate($registerDTO);
+            $this->csrfProtectionService->validateCsrfTokenForForm('registration');
             $this->authenticationService->register($registerDTO);
             $this->messages[] = ['type' => 'success', 'message' => 'Das Benutzerkonto wurde angelegt.'];
         } catch (AccountEmailIsInvalidException $e) {
@@ -53,6 +58,11 @@ class RegistrationController
             $this->messages[] = ['type' => 'danger', 'message' => 'Die angegebene E-Mail-Adresse überschreitet das zulässige Maximum'];
         } catch (AccountCreationFailedException $e) {
             $this->messages[] = ['type' => 'danger', 'message' => 'Das Benutzerkonto konnte aufgrund eines Fehlers nicht angelegt werden.'];
+        } catch (CsrfCheckFailedException $e) {
+            $this->messages[] = ['type' => 'danger', 'message' => 'Das Benutzerkonto konnte aufgrund eines CSRF Fehlers nicht angelegt werden.'];
+        } catch (AccountEmailIsAlreadyUsedException $e) {
+            // This thing is never used in here because the necessary flag "throwDuplicateEmailError" is not set to true, therefore not needed.
+            // The stated flag is only used in the console command
         }
 
         return $this->viewRegisterForm($request);

@@ -41,8 +41,9 @@
                 <div class="form-footer">
                     <button type="submit" class="btn btn-primary w-100">Registrieren</button>
                 </div>
+                <?= $this->generateCsrfField('registration') ?>
             </div>
         </form>
-        <div class="text-center text-secondary mt-3">Bereits ein Konto? <a href="" tabindex="-1">Hier Anmelden</a></div>
+        <div class="text-center text-secondary mt-3">Bereits ein Konto? <a href="/authentication/login" tabindex="-1">Hier Anmelden</a></div>
     </div>
 </div>

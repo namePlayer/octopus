@@ -20,6 +20,10 @@ $router->get('/authentication/registration', 'App\Authentication\Controller\Regi
 $router->post('/authentication/registration', 'App\Authentication\Controller\RegistrationController::register')
     ->setHost($_ENV['SOFTWARE_HOST']);
 
+$router->get('/authentication/login', 'App\Authentication\Controller\LoginController::viewLoginForm')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+$router->post('/authentication/login', 'App\Authentication\Controller\LoginController::login')
+    ->setHost($_ENV['SOFTWARE_HOST']);
 
 $response = $router->dispatch($request);
 new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter()->emit($response);
