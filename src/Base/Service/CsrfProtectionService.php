@@ -6,14 +6,15 @@ namespace App\Base\Service;
 use App\Base\DTO\CsrfTokenDTO;
 use App\Base\Exception\CsrfCheckFailedException;
 use App\Base\Exception\ImproperlyConfiguredServerException;
+use App\Base\Interface\CsrfProtectionInterface;
 use Monolog\Logger;
 use Random\RandomException;
 
-class CsrfProtectionService
+readonly class CsrfProtectionService implements CsrfProtectionInterface
 {
 
     public function __construct(
-        private readonly Logger $logger
+        private Logger $logger
     )
     {}
 

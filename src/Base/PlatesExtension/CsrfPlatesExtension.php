@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Base\PlatesExtension;
 
-use App\Base\Service\CsrfProtectionService;
+use App\Base\Interface\CsrfProtectionInterface;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 
@@ -11,7 +11,7 @@ class CsrfPlatesExtension implements ExtensionInterface
 {
 
     public function __construct(
-        private readonly CsrfProtectionService $csrfProtectionService,
+        private readonly CsrfProtectionInterface $csrfProtectionService,
     )
     {
     }

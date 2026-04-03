@@ -16,12 +16,14 @@ $container->add(\App\Authentication\Controller\RegistrationController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\App\Authentication\Validator\RegistrationValueValidator::class)
     ->addArgument(\App\Authentication\Service\AuthenticationService::class)
-    ->addArgument(\App\Base\Service\CsrfProtectionService::class);
+    ->addArgument(\App\Base\Service\CsrfProtectionService::class)
+    ->addArgument(\App\Base\Service\AlertService::class);
 
 $container->add(\App\Authentication\Controller\LoginController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\App\Authentication\Service\AuthenticationService::class)
-    ->addArgument(\App\Base\Service\CsrfProtectionService::class);
+    ->addArgument(\App\Base\Service\CsrfProtectionService::class)
+    ->addArgument(\App\Base\Service\AlertService::class);
 
 #
 # Services
@@ -41,6 +43,9 @@ $container->add(\App\Base\Service\CacheService::class)
     ->addArgument(\Monolog\Logger::class);
 
 $container->add(\App\Base\Service\CsrfProtectionService::class)
+    ->addArgument(\Monolog\Logger::class);
+
+$container->add(\App\Base\Service\AlertService::class)
     ->addArgument(\Monolog\Logger::class);
 
 #
@@ -69,9 +74,13 @@ $container->add(\Monolog\Logger::class)
 $container->add(\App\Base\PlatesExtension\CsrfPlatesExtension::class)
     ->addArgument(\App\Base\Service\CsrfProtectionService::class);
 
+$container->add(\App\Base\PlatesExtension\AlertsPlatesExtension::class)
+    ->addArgument(\App\Base\Service\AlertService::class);
+
 $container->add(League\Plates\Engine::class)
     ->addArgument(__DIR__.'/../template')
-    ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\CsrfPlatesExtension::class]);
+    ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\CsrfPlatesExtension::class])
+    ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\AlertsPlatesExtension::class]);
 
 $responseFactory = (new \Laminas\Diactoros\ResponseFactory());
 $jsonStrategy = new \League\Route\Strategy\JsonStrategy($responseFactory)->setContainer($container);

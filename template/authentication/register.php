@@ -6,9 +6,7 @@
             <h1><?= $_ENV['SOFTWARE_TITLE'] ?></h1>
         </div>
 
-        <?php foreach($messages as $message): ?>
-            <?php $this->insert('element/alert', ['alert' => $message]); ?>
-        <?php endforeach; ?>
+        <?= $this->outputAlerts() ?>
 
         <form class="card card-md" action="" method="post">
             <div class="card-body">

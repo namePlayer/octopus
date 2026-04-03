@@ -26,6 +26,7 @@ class Software
     public const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     public const int MAXIMUM_EMAIL_LENGTH = 255;
+    public const string ALERT_DEFAULT_TEMPLATE = 'element/alert';
 
     /**
      * @throws EnvironmentException
