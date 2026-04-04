@@ -5,7 +5,13 @@ return [
         'registration' => [
             'title' => 'Registrierung',
             'confirmButton' => 'Registrieren',
-            'acceptTos' => 'Ich akzeptiere die {{legal.termsOfService}}'
+            'acceptTos' => 'Ich akzeptiere die {{termsOfService}}.',
+            'messages' => [
+                'success' => 'Das Benutzerkonto wurde erfolgreich angelegt.',
+                'failure' => 'Das Benutzerkonto konnte aufgrund eines Fehlers nicht angelegt werden.',
+                'csrfFailure' => 'Das Benutzerkonto konnte aufgrund eines CSRF Fehlers nicht angelegt werden.',
+                'doesNotAcceptTerms' => 'Das Benutzerkonto wurde nicht angelegt, da den Nutzungsbedingungen nicht zugestimmt wurde.'
+            ]
         ],
         'login' => [
             'title' => 'Anmeldung',
@@ -15,6 +21,12 @@ return [
             'email' => 'E-Mail',
             'password' => 'Passwort',
             'repeatPassword' => 'Passwort wiederholen',
+            'messages' => [
+                'passwordTooShort' => 'Das angegebene Passwort ist zu kurz.',
+                'passwordRepeatWrong' => 'Die angegebenen Passwörter stimmen nicht überein.',
+                'emailTooLong' => 'Die Länge der angegebenen E-Mail-Adresse überschreitet das zulässige Maximum.',
+                'invalidEmail' => 'Die angegebene E-Mail-Adresse ist ungültig.'
+            ]
         ]
     ],
     'legal' => [

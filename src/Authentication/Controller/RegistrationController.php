@@ -5,6 +5,7 @@ namespace App\Authentication\Controller;
 
 use App\Authentication\DTO\CreateAccountDTO;
 use App\Authentication\Exception\AccountCreationFailedException;
+use App\Authentication\Exception\AccountDoesNotAcceptTermsException;
 use App\Authentication\Exception\AccountEmailExceedsMaximumLengthException;
 use App\Authentication\Exception\AccountEmailIsAlreadyUsedException;
 use App\Authentication\Exception\AccountEmailIsInvalidException;
@@ -17,6 +18,7 @@ use App\Base\Http\HtmlResponse;
 use App\Base\Interface\AlertServiceInterface;
 use App\Base\Interface\CsrfProtectionInterface;
 use App\Base\Interface\TranslationInterface;
+use App\Software;
 use Laminas\Diactoros\Response\RedirectResponse;
 use League\Plates\Engine;
 use Psr\Http\Message\ResponseInterface;
@@ -56,20 +58,22 @@ class RegistrationController
             $this->registrationValueValidator->validate($registerDTO);
             $this->csrfProtectionService->validateCsrfTokenForForm('registration');
             $this->authenticationService->register($registerDTO);
-            $this->alertService->addAlert('success', 'Das Benutzerkonto wurde erfolgreich angelegt.');
+            $this->alertService->addAlert('success', Software::ALERT_TRANSLATION_INDICATOR.'account.registration.messages.success');
             return new RedirectResponse('/authentication/login');
         } catch (AccountEmailIsInvalidException $e) {
-            $this->alertService->addAlert('danger', 'Die angegebene E-Mail-Adresse ist ungültig.');
+            $this->alertService->addAlert('danger', Software::ALERT_TRANSLATION_INDICATOR.'account.general.messages.invalidEmail');
         } catch (PasswordRepeatDoesNotMatchException $e) {
-            $this->alertService->addAlert('danger', 'Die angegebenen Passwörter stimmen nicht überein.');
+            $this->alertService->addAlert('danger', Software::ALERT_TRANSLATION_INDICATOR.'account.general.messages.passwordRepeatWrong');
         } catch (PasswordToShortException $e) {
-            $this->alertService->addAlert('danger', 'Das angegebene Passwort ist zu kurz.');
+            $this->alertService->addAlert('danger', Software::ALERT_TRANSLATION_INDICATOR.'account.general.messages.passwordTooShort');
         } catch (AccountEmailExceedsMaximumLengthException $e) {
-            $this->alertService->addAlert('danger', 'Die Länge der angegebenen E-Mail-Adresse überschreitet das zulässige Maximum.');
+            $this->alertService->addAlert('danger', Software::ALERT_TRANSLATION_INDICATOR.'account.general.messages.emailTooLong');
         } catch (AccountCreationFailedException $e) {
-            $this->alertService->addAlert('danger', 'Das Benutzerkonto konnte aufgrund eines Fehlers nicht angelegt werden.');
+            $this->alertService->addAlert('danger', Software::ALERT_TRANSLATION_INDICATOR.'account.registration.messages.failure');
         } catch (CsrfCheckFailedException $e) {
-            $this->alertService->addAlert('danger', 'Das Benutzerkonto konnte aufgrund eines CSRF Fehlers nicht angelegt werden.');
+            $this->alertService->addAlert('danger', Software::ALERT_TRANSLATION_INDICATOR.'account.registration.messages.csrfFailure');
+        } catch (AccountDoesNotAcceptTermsException $e) {
+            $this->alertService->addAlert('danger', Software::ALERT_TRANSLATION_INDICATOR.'account.registration.messages.doesNotAcceptTerms');
         } catch (AccountEmailIsAlreadyUsedException $e) {
             // This thing is never used in here because the necessary flag "throwDuplicateEmailError" is not set to true, therefore not needed.
             // The stated flag is only used in the console command

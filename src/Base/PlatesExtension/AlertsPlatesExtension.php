@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Base\PlatesExtension;
 
 use App\Base\Interface\AlertServiceInterface;
+use App\Base\Interface\TranslationInterface;
 use App\Software;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
@@ -15,6 +16,7 @@ class AlertsPlatesExtension implements ExtensionInterface
 
     public function __construct(
         private readonly AlertServiceInterface $alertService,
+        private readonly TranslationInterface $translator,
     )
     {
     }
@@ -29,6 +31,11 @@ class AlertsPlatesExtension implements ExtensionInterface
     {
         $output = '';
         foreach ($this->alertService->getAllAlerts() as $alert) {
+            $message = $alert['message'];
+            if(str_starts_with($message, Software::ALERT_TRANSLATION_INDICATOR)) {
+                $message = str_replace(Software::ALERT_TRANSLATION_INDICATOR, '', $message);
+                $alert['message'] = $this->translator->translate($message);
+            }
             $output .= $this->engine->render(Software::ALERT_DEFAULT_TEMPLATE, ['alert' => $alert]);
         }
 

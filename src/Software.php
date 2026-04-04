@@ -29,6 +29,7 @@ class Software
 
     public const int MAXIMUM_EMAIL_LENGTH = 255;
     public const string ALERT_DEFAULT_TEMPLATE = 'element/alert';
+    public const string ALERT_TRANSLATION_INDICATOR = 'translate:';
 
     /**
      * @throws EnvironmentException

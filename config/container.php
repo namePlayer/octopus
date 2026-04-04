@@ -79,7 +79,8 @@ $container->add(\App\Base\PlatesExtension\CsrfPlatesExtension::class)
     ->addArgument(\App\Base\Service\CsrfProtectionService::class);
 
 $container->add(\App\Base\PlatesExtension\AlertsPlatesExtension::class)
-    ->addArgument(\App\Base\Service\AlertService::class);
+    ->addArgument(\App\Base\Service\AlertService::class)
+    ->addArgument(\App\Base\Service\TranslationService::class);
 
 $container->add(\App\Base\PlatesExtension\TranslatorPlatesExtension::class)
     ->addArgument(\App\Base\Service\TranslationService::class);

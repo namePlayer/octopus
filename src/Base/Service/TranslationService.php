@@ -48,6 +48,10 @@ class TranslationService implements TranslationInterface
             $translation = $key;
         }
 
+        foreach ($params as $param => $value) {
+            $translation = str_replace($param, $value, $translation);
+        }
+
         return $translation;
     }
 
@@ -78,10 +82,17 @@ class TranslationService implements TranslationInterface
         $translationPath = Software::TRANSLATIONS_DIR . '/' . $this->getLocale() . '.php';
         if(!file_exists($translationPath))
         {
-            $this->logger->error('Failed loading the active translation.', ['file' => $translationPath]);
+            $this->logger->error('Failed loading the active translation. The file was not found.', ['file' => $translationPath]);
             throw new TranslationLocaleWasNotFoundException($this->locale);
         }
-        $this->translations = require_once $translationPath;
+        $translations = include $translationPath;
+        if(!is_array($translations))
+        {
+            $this->logger->error('Failed to load the active translation. The files content does not equal an array.', ['file' => $translationPath]);
+            throw new TranslationLocaleWasNotFoundException($translationPath);
+        }
+        $this->translations = $translations;
+        unset($translations);
     }
 
 }

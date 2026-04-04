@@ -41,7 +41,10 @@
                 <div class="mb-3">
                     <label class="form-check">
                         <input type="checkbox" class="form-check-input" id="registrationAcceptTerms" name="registrationAcceptTerms" required>
-                        <span class="form-check-label">Ich akzeptiere die <a href="" tabindex="-1">Nutzungsbedingungen</a>.</span>
+                        <span class="form-check-label">
+                            <?= $this->translate('account.registration.acceptTos',
+                                    ['{{termsOfService}}' => '<a href="" tabindex="-1">'.$this->translate('legal.termsOfService').'</a>']) ?>
+                        </span>
                     </label>
                 </div>
                 <div class="form-footer">
