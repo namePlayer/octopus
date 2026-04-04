@@ -17,7 +17,8 @@ $container->add(\App\Authentication\Controller\RegistrationController::class)
     ->addArgument(\App\Authentication\Validator\RegistrationValueValidator::class)
     ->addArgument(\App\Authentication\Service\AuthenticationService::class)
     ->addArgument(\App\Base\Service\CsrfProtectionService::class)
-    ->addArgument(\App\Base\Service\AlertService::class);
+    ->addArgument(\App\Base\Service\AlertService::class)
+    ->addArgument(\App\Base\Service\TranslationService::class);
 
 $container->add(\App\Authentication\Controller\LoginController::class)
     ->addArgument(\League\Plates\Engine::class)
@@ -46,6 +47,9 @@ $container->add(\App\Base\Service\CsrfProtectionService::class)
     ->addArgument(\Monolog\Logger::class);
 
 $container->add(\App\Base\Service\AlertService::class)
+    ->addArgument(\Monolog\Logger::class);
+
+$container->add(\App\Base\Service\TranslationService::class)
     ->addArgument(\Monolog\Logger::class);
 
 #
@@ -77,10 +81,14 @@ $container->add(\App\Base\PlatesExtension\CsrfPlatesExtension::class)
 $container->add(\App\Base\PlatesExtension\AlertsPlatesExtension::class)
     ->addArgument(\App\Base\Service\AlertService::class);
 
+$container->add(\App\Base\PlatesExtension\TranslatorPlatesExtension::class)
+    ->addArgument(\App\Base\Service\TranslationService::class);
+
 $container->add(League\Plates\Engine::class)
     ->addArgument(__DIR__.'/../template')
     ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\CsrfPlatesExtension::class])
-    ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\AlertsPlatesExtension::class]);
+    ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\AlertsPlatesExtension::class])
+    ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\TranslatorPlatesExtension::class]);
 
 $responseFactory = (new \Laminas\Diactoros\ResponseFactory());
 $jsonStrategy = new \League\Route\Strategy\JsonStrategy($responseFactory)->setContainer($container);

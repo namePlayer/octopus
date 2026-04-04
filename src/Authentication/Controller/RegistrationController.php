@@ -16,6 +16,7 @@ use App\Base\Exception\CsrfCheckFailedException;
 use App\Base\Http\HtmlResponse;
 use App\Base\Interface\AlertServiceInterface;
 use App\Base\Interface\CsrfProtectionInterface;
+use App\Base\Interface\TranslationInterface;
 use Laminas\Diactoros\Response\RedirectResponse;
 use League\Plates\Engine;
 use Psr\Http\Message\ResponseInterface;
@@ -32,6 +33,7 @@ class RegistrationController
         private readonly AuthenticationService $authenticationService,
         private readonly CsrfProtectionInterface $csrfProtectionService,
         private readonly AlertServiceInterface $alertService,
+        private readonly TranslationInterface $translationService
     )
     {
     }

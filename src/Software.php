@@ -13,17 +13,19 @@ use Symfony\Component\Dotenv\Exception\PathException;
 class Software
 {
 
-    public const VERSION = '0.0.1';
-    public const BUILD = '000001';
-    public const TYPE = 'dev';
+    public const string VERSION = '0.0.1';
+    public const string BUILD = '000001';
+    public const string TYPE = 'dev';
 
-    public const CACHE_DIR = __DIR__ . '/../data/cache';
-    public const LOG_DIR = __DIR__ . '/../data/log';
+    public const string BASE_DIR = __DIR__.'/..';
+    public const string CACHE_DIR = Software::BASE_DIR . '/data/cache';
+    public const string LOG_DIR = Software::BASE_DIR . '/data/log';
+    public const string TRANSLATIONS_DIR = Software::BASE_DIR . '/translations';
 
-    public const LOG_FILENAME = 'app.log';
-    public const CONSOLE_LOG_FILENAME = 'console.log';
+    public const string LOG_FILENAME = 'app.log';
+    public const string CONSOLE_LOG_FILENAME = 'console.log';
 
-    public const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
+    public const string DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     public const int MAXIMUM_EMAIL_LENGTH = 255;
     public const string ALERT_DEFAULT_TEMPLATE = 'element/alert';
