@@ -6,6 +6,8 @@ return [
             'title' => 'Registrierung',
             'confirmButton' => 'Registrieren',
             'acceptTos' => 'Ich akzeptiere die {{termsOfService}}.',
+            'alreadyHaveAccount' => 'Bereits ein Konto? {{loginHere}}.',
+            'loginHereLinkText' => 'Hier anmelden',
             'messages' => [
                 'success' => 'Das Benutzerkonto wurde erfolgreich angelegt.',
                 'failure' => 'Das Benutzerkonto konnte aufgrund eines Fehlers nicht angelegt werden.',
@@ -15,7 +17,10 @@ return [
         ],
         'login' => [
             'title' => 'Anmeldung',
-            'confirmButton' => 'Anmelden'
+            'confirmButton' => 'Anmelden',
+            'notHaveAccount' => 'Noch kein Konto? {{registerHere}}.',
+            'registerHereLinkText' => 'Hier Registrieren',
+            'forgotPassword' => 'Passwort vergessen?',
         ],
         'general' => [
             'email' => 'E-Mail',

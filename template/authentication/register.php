@@ -55,6 +55,9 @@
                 <?= $this->generateCsrfField('registration') ?>
             </div>
         </form>
-        <div class="text-center text-secondary mt-3">Bereits ein Konto? <a href="/authentication/login" tabindex="-1">Hier Anmelden</a></div>
+        <div class="text-center text-secondary mt-3">
+            <?= $this->translate('account.registration.alreadyHaveAccount', [
+                    '{{loginHere}}' => '<a href="/authentication/login" tabindex="-1">'.$this->translate('account.registration.loginHereLinkText').'</a>']) ?>
+        </div>
     </div>
 </div>
