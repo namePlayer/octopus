@@ -50,6 +50,8 @@ $container->add(\App\Base\Service\AlertService::class)
     ->addArgument(\Monolog\Logger::class);
 
 $container->add(\App\Base\Service\TranslationService::class)
+    ->addArgument($_ENV['APP_DEFAULT_LANGUAGE'])
+    ->addArgument(\App\Software::TRANSLATIONS_DIR)
     ->addArgument(\Monolog\Logger::class);
 
 #

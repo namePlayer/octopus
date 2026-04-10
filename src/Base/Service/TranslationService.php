@@ -6,35 +6,31 @@ namespace App\Base\Service;
 use App\Base\Exception\IllegalCharacterException;
 use App\Base\Exception\TranslationLocaleWasNotFoundException;
 use App\Base\Interface\TranslationInterface;
-use App\Software;
 use Monolog\Logger;
 
-class TranslationService implements TranslationInterface
+final class TranslationService implements TranslationInterface
 {
 
     private array $translations = [];
-    private string $locale = '';
 
     public function __construct(
+        private readonly string $defaultLocale,
+        private readonly string $translationDir,
         private readonly Logger $logger,
     )
     {
-        $this->locale = $_ENV['APP_DEFAULT_LANGUAGE'];
+        $this->loadTranslation($this->defaultLocale);
     }
 
     public function translate(string $key, array $params = [], ?string $locale = null): string
     {
-        if(!empty($locale))
-        {
-            $this->setLocale($locale);
+        if(is_null($locale)) {
+            $locale = $this->defaultLocale;
         }
-
-        if(empty($this->translations)) {
-            $this->loadTranslations();
-        }
+        $this->loadTranslation($locale);
 
         $index = explode('.', $key);
-        $translation = $this->translations;
+        $translation = $this->translations[$locale];
 
         foreach ($index as $value) {
             if(!array_key_exists($value, $translation)) {
@@ -55,35 +51,23 @@ class TranslationService implements TranslationInterface
         return $translation;
     }
 
-    public function setLocale(string $locale): void
+    private function loadTranslation(string $locale): void
     {
-        if(str_contains($locale, '\\'))
+        if(preg_match('/^[a-zA-Z_\-]+$/', $locale) === 0)
         {
-            $this->logger->error('Detected illegal character in locale lookup. Aborting.', ['character' => '\\']);
+            $this->logger->error('Invalid character found in locale string. Only allowed are a-zA-z_-', ['locale' => $locale]);
             throw new IllegalCharacterException();
         }
 
-        if(str_contains($locale, '/'))
-        {
-            $this->logger->error('Detected illegal character in locale lookup. Aborting.', ['character' => '/']);
-            throw new IllegalCharacterException();
+        if(isset($this->translations[$locale])) {
+            return;
         }
 
-        $this->locale = $locale;
-    }
-
-    private function getLocale(): string
-    {
-        return $this->locale;
-    }
-
-    private function loadTranslations(): void
-    {
-        $translationPath = Software::TRANSLATIONS_DIR . '/' . $this->getLocale() . '.php';
+        $translationPath = $this->translationDir . '/' . $locale . '.php';
         if(!file_exists($translationPath))
         {
             $this->logger->error('Failed loading the active translation. The file was not found.', ['file' => $translationPath]);
-            throw new TranslationLocaleWasNotFoundException($this->locale);
+            throw new TranslationLocaleWasNotFoundException($locale);
         }
         $translations = include $translationPath;
         if(!is_array($translations))
@@ -91,7 +75,7 @@ class TranslationService implements TranslationInterface
             $this->logger->error('Failed to load the active translation. The files content does not equal an array.', ['file' => $translationPath]);
             throw new TranslationLocaleWasNotFoundException($translationPath);
         }
-        $this->translations = $translations;
+        $this->translations[$locale] = $translations;
         unset($translations);
     }
 
