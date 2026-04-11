@@ -50,6 +50,26 @@ Implementierung einer vollständigen Passwort-Reset-Funktionalität für das Aut
 
 ---
 
+- [x] **2. PasswordResetTokenService erstellen** ✅
+
+  **Zusammenfassung:**
+  Service für die Verwaltung von Passwort-Reset-Token mit Generierung, Validierung und Expiration.
+  
+  **File:**
+  `- src/Authentication/Service/PasswordResetTokenService.php` (existiert)
+  
+  **Details:**
+  - `generateToken(Account $account)` - 64-char hex token via `random_bytes()`
+  - `isValidToken(string $token, ?Account $account = null): bool` - existiert UND nicht abgelaufen
+  - `expireToken(string $token)` - nach erfolgreichem Reset oder Ablauf  
+  - `validateAndExpire(string $token, ?Account $account = null): ?Account` - atomare Operation
+  - `Connection` und `Logger` werden injiziert
+  - Token wird direkt via UPDATE in DB gespeichert
+  
+  **Status:** Kompletter Implementierung vorhanden
+  
+---
+
 - [x] **3. EmailService erstellen**
 
   **Zusammenfassung:**
@@ -116,19 +136,21 @@ Implementierung einer vollständigen Passwort-Reset-Funktionalität für das Aut
 
 ---
 
-- [ ] **5. ForgotPasswordController erstellen**
+- [x] **5. ForgotPasswordController erstellen** ✅
 
   **Zusammenfassung:**
   Controller für die Anforderung eines Passwort-Reset.
   
   **Dateien:**
-  - `src/Authentication/Controller/ForgotPasswordController.php` (erstellen)
+  - `src/Authentication/Controller/ForgotPasswordController.php` (erfolgt)
+  
+  **Status:** Implemented
   
   **Details:**
-  - Dependencies: `EmailService`, `AccountService`, `AlertService`, `TranslationService`, `Logger`
+  - Dependencies: `EmailService`, `AccountService`, `AlertService`, `TranslationService`, `Logger`, `CsrfProtectionService`
   - GET `/authentication/forgot-password` - Formular anzeigen
-  - POST `/authentication/forgot-password` - Reset anfordern
-  - E-Mail wird automatisch nach erfolgreicher Anfrage versendet
+  - POST `/authentication/forgot-password` - Reset anfordern + E-Mail senden
+  - Email wird automatisch nach erfolgreicher Anfrage versendet (Account gefunden)
   
   **Methodensignaturen:**
   ```php
