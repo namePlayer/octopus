@@ -33,7 +33,13 @@ template/                      # League/Plates templates
     └── alert.php
 ```
 
-## Data Flow
+## Data Flow Conventions
+1. **Request → Route**: `config/routes.php` maps URLs to controller methods.
+2. **Controller → Service**: Controllers receive dependencies via constructor injection from the DI container.
+3. **Service → Table**: Services must delegate all data operations to Table repositories.
+4. **Table → Doctrine**: Tables utilize `Doctrine\DBAL\QueryBuilder` and *must* use parameter binding for all query executions.
+5. **Response**: Controllers return standardized responses (`HtmlResponse` or `JsonResponse`).
+
 
 1. **Request → Route**: `config/routes.php` maps URLs to controller methods
 2. **Controller → Service**: Controllers receive dependencies from DI container
@@ -41,7 +47,12 @@ template/                      # League/Plates templates
 4. **Table → Doctrine**: Tables use `Doctrine\DBAL\QueryBuilder` with parameter binding
 5. **Response**: Controllers return `Laminas\Diactoros\Response` or custom `HtmlResponse`/`JsonResponse`
 
-## Installation & Setup
+# Project Constraints & Dependencies
+*   **PHP Version**: Requires PHP 8.4+ (per `composer.json`).
+*   **Core Frameworks**: Relies heavily on League\Container for DI, League/Plates for templating, and Doctrine\DBAL for ORM/DBAL interactions.
+*   **Mandatory Extensions**: Requires `ext-pdo` for database connectivity.
+*   **Environment**: Uses `symfony/dotenv` to initialize the environment before accessing `$_ENV` variables.
+
 
 ```bash
 # 1. Copy environment template
@@ -61,7 +72,17 @@ composer install
 # 4. Ensure database is created and configured
 ```
 
-## Essential Commands
+## Build, Test, & Execution Commands
+*   **Install Dependencies**:
+    *   `composer install`: Installs required packages listed in `composer.json`.
+    *   `composer update`: Updates all project dependencies.
+*   **Run Tests**:
+    *   `./vendor/bin/phpunit [Test File]`: Executes PHPUnit tests. Ensure test files target the correct scope.
+*   **Clear Cache**:
+    *   `php src/Base/Command/CacheClearCommand.php`: Must be run explicitly to clear application caches.
+*   **Deployment/Runtime**:
+    *   (No explicit build command found; project appears to run directly from `public/index.php`.)
+
 
 ```bash
 # Install dependencies
@@ -77,7 +98,18 @@ composer update
 php src/Base/Command/CacheClearCommand.php
 ```
 
-## DI Container Patterns
+## Architecture / Data Flow Mechanics
+*   **Dependency Injection (DI)**: The container is central. Services receive dependencies through constructor injection.
+    *   *Example (Service Registration)*: `container->add(SomeService::class)->addArgument(Dependency1::class)->addArgument(Dependency2::class);`
+    *   *Example (DB Wiring)*: The Doctrine Connection is provided via the container using `DatabaseFactory`.
+*   **Controllers**:
+    *   **HTTP Controller**: Must extend `\App\Base\Controller\HtmlController` or `JsonController`.
+    *   **Dependency Injection**: Controllers receive templating engines (`Engine`) and core services (e.g., `AlertService`) via constructor injection.
+*   **Service Logic**:
+    *   **Separation of Concerns**: Business logic belongs in `src/Authentication/Service/` or `src/Base/Service/`. Data access MUST be handled by a `Table` class.
+    *   **Data Retrieval**: Use explicit methods like `findByUuid` or `findByEmail` on `Table` objects rather than constructing raw queries.
+*   **Template Layer (Plates)**: Extensions (CSRF, Alert, Translator) are auto-loaded/managed by the container; do not manually re-register them.
+
 
 ### Service Registration
 ```php
@@ -102,6 +134,14 @@ Controllers receive two types of arguments:
 - **Specific controllers** (Login, Registration): Receive all required services as arguments
 
 ## Naming Conventions
+*   **Namespaces**: Strictly follow the pattern `App\[Domain]\[Type]\[Name]`.
+    *   **Domain**: `Authentication`, `Base`
+    *   **Type**: `Service`, `Controller`, `Table`, `Model`, `Command`, `Exception`, `DTO`, `Validator`
+*   **Exceptions**: Followes the pattern `{Resource}{Problem}Exception` (e.g., `AccountEmailIsAlreadyUsedException`).
+*   **DTOs**: Must be prefixed by purpose (e.g., `CreateAccountDTO`, `LoginAccountDTO`).
+*   **Plates templates**: Keep names simple (e.g., `index.php`, `pageBase.php`).
+*   **Environment variables**: Core system variables use the `SOFTWARE_*` prefix.
+
 
 - **Namespaces**: `App\[Domain]\[Type]\[Name]`
   - Domain: `Authentication`, `Base`
@@ -112,6 +152,10 @@ Controllers receive two types of arguments:
 - **Environment variables**: `SOFTWARE_*` prefix
 
 ## Testing Approach
+*   **Tooling**: Use PHPUnit 13+ (`./vendor/bin/phpunit`).
+*   **Pattern**: Tests must utilize dependency injection heavily, mocking external dependencies (like Services or Table connectors) to ensure unit isolation.
+*   **Database**: Database operations require careful setup, likely involving transaction rollback mechanisms or dedicated, isolated test/sandbox databases. Raw SQL execution in tests should be avoided in favor of ORM/DBAL builder patterns.
+
 
 - PHPUnit 13+ (`vendor/bin/phpunit`)
 - Test files should mirror structure in `tests/` directory
@@ -124,7 +168,18 @@ Controllers receive two types of arguments:
 2. **Separation of Concerns**: Business logic in Services, data access in Tables, presentation in Templates
 3. **Fail Fast**: Exceptions thrown in Services with descriptive messages, logged via Monolog\Logger
 
-## Important Gotchas
+## Key Technical Gotchas (Non-Obvious Knowledge)
+*   **Environment Variables**:
+    *   **Route Dependency**: Routes *directly* consume `$_ENV['SOFTWARE_HOST']`. The system relies on `symfony/dotenv` running before any route processing occurs to populate this variable.
+    *   **Language Context**: The *default* language for translation is loaded from `$_ENV['APP_DEFAULT_LANGUAGE']`, *not* from `SOFTWARE_*` variables.
+*   **Database Security**:
+    *   **SQL Injection Prevention**: **Never** build queries using string concatenation. Always use parameter binding (`setParameter`) provided by `Doctrine\DBAL\QueryBuilder`.
+*   **Object Lifecycle**:
+    *   **Services**: When creating/updating services, always reference the full, correct *interface* in the container binding, not just a concrete class, to maximize DI flexibility.
+    *   **Plates Extensions**: Extensions are automatically managed; attempting to manually instantiate or re-register them outside of `container.php` is prone to breakage.
+*   **System Context**:
+    *   The application is bootstrapped via `public/index.php` and routing is done via `config/routes.php`. All primary actions flow from this entry point.
+
 
 ### Environment Variables
 - Routes use `$_ENV['SOFTWARE_HOST']` directly (not from `.env` until loaded by Dotenv)
@@ -200,7 +255,18 @@ $accountTable->insert($account); // returns bool
 $accountTable->findByEmail($email); // returns ?Account
 ```
 
-## File Locations
+## Deployment & Maintenance
+*   **File Locations**:
+    *   Templates: `template/*.php`
+    *   Translation files: `translations/*.php`
+    *   Log files: `data/log/*.log`
+    *   Caches: `data/cache/*.cache`
+    *   Static assets: `public/`
+    *   Entry point: `public/index.php` (Primary entry point)
+*   **Database Schema**:
+    *   Primary keys MUST use UUIDs (`doctrine/dbal` handles this). Do not use auto-incrementing integers for primary identifiers.
+    *   The core `accounts` table contains: UUID (PK), email, password hash, and timestamps.
+
 
 | Purpose | Location |
 |---------|----------|
