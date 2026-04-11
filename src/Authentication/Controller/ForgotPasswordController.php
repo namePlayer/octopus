@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+declare(strict_types=1);
 
 namespace App\Authentication\Controller;
 
@@ -6,6 +6,7 @@ use App\Authentication\Service\AccountService;
 use App\Authentication\Service\AlertService;
 use App\Authentication\Service\EmailService;
 use App\Authentication\Service\PasswordResetTokenService;
+use App\Authentication\Service\RateLimitService;
 use App\Authentication\Exception\PasswordResetTokenExpiredException;
 use App\Authentication\Exception\PasswordResetTokenInvalidException;
 use App\Authentication\Model\Account;
@@ -34,7 +35,8 @@ class ForgotPasswordController
         private readonly AlertService $alertService,
         private readonly TranslationService $translationService,
         private readonly Logger $logger,
-        private readonly CsrfProtectionService $csrfProtectionService
+        private readonly CsrfProtectionService $csrfProtectionService,
+        private readonly RateLimitService $rateLimitService
     )
     {
     }
@@ -57,6 +59,12 @@ class ForgotPasswordController
 
         if (empty($email)) {
             $this->alertService->addAlert('danger', 'Bitte geben Sie eine gültige E-Mail-Adresse ein.');
+            return $this->showForgotPasswordForm();
+        }
+
+        // Rate-Limitierung prüfen
+        if (false === $this->rateLimitService->checkAndRecord($email)) {
+            $this->alertService->addAlert('warning', 'Sie können den Reset-Link nur 3 Mal pro Stunde anfordern.');
             return $this->showForgotPasswordForm();
         }
 

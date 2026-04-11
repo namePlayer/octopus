@@ -93,6 +93,17 @@ $container->add(League\Plates\Engine::class)
     ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\AlertsPlatesExtension::class])
     ->addMethodCall('loadExtension', [\App\Base\PlatesExtension\TranslatorPlatesExtension::class]);
 
+# Passwort-Reset Services
+$container->add(\App\Base\Service\EmailService::class)
+    ->addArgument(\Monolog\Logger::class);
+
+$container->add(\App\Authentication\Service\PasswordResetTokenService::class)
+    ->addArgument(\Monolog\Logger::class);
+
+$container->add(\App\Authentication\Service\RateLimitService::class)
+    ->addArgument(\Doctrine\DBAL\Connection::class)
+    ->addArgument(\Monolog\Logger::class);
+
 $responseFactory = (new \Laminas\Diactoros\ResponseFactory());
 $jsonStrategy = new \League\Route\Strategy\JsonStrategy($responseFactory)->setContainer($container);
 $applicationStrategy = new \League\Route\Strategy\ApplicationStrategy()->setContainer($container);

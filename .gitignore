@@ -2,6 +2,10 @@
 /.ddev/
 /.ddev*/
 /.idea/
+.agents
+.claude
+.crush
+skills-lock.json
 **/.env
 /public/test.php
 /data/log/*
