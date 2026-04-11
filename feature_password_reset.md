@@ -3,22 +3,6 @@
 ## Übersicht
 Implementierung einer vollständigen Passwort-Reset-Funktionalität für das Authentifizierungssystem.
 
-### Projekt-Status
-Gesamte Liste von Aufgaben:
-
-| Aufgabe                                                            | Status   |
-|--------------------------------------------------------------------|----------|
-| 1. Datenbank-Erweiterung                                            | ✅ |
-| 2. PasswordResetTokenService erstellen                              | ✅  |
-| 3. EmailService erstellen                                            | ✅ |
-| 4. EmailTemplate erstellen                                           | ✅ |
-| 5. ForgotPasswordController erstellen                                | ✅  |
-| 6. ResetPasswordController erstellen                                 | ⬜  |
-| 7. Exception-Klassen erstellen                                        | ✅ |
-| 7.5 DI Container anpassen                                            | ⬜  |
-| 8. Router Konfiguration anpassen                                     | ⬜  |
-| 9. Login-Seite anpassen                                              | ⬜  |
-| 10. Sicherheitsmaßnahmen (Rate-Limiting)                             | ⬜  |
 
 
 ## Todo Liste
@@ -165,7 +149,7 @@ Gesamte Liste von Aufgaben:
 
 ---
 
-- [ ] **6. ResetPasswordController erstellen**
+- [x] **6. ResetPasswordController erstellen**
 
   **Zusammenfassung:**
   Controller für das Zurücksetzen des Passworts.
@@ -194,7 +178,7 @@ Gesamte Liste von Aufgaben:
 
 ---
 
-- [ ] **7. Exception-Klassen erstellen**
+- [x] **7. Exception-Klassen erstellen**
 
   **Zusammenfassung:**
   Ausnahmen für Fehlerfälle im Reset-Prozess.
