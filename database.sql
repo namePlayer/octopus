@@ -8,9 +8,12 @@ CREATE TABLE db.Account (
     firstname varchar(100) NOT NULL,
     lastname varchar(100) NOT NULL,
     registeredAt DATETIME NOT NULL,
+    passwordResetToken VARCHAR(64) NULL,
+    passwordResetTokenExpires DATETIME NULL,
     CONSTRAINT Account_PK PRIMARY KEY (id),
     CONSTRAINT Account_UNIQUE UNIQUE KEY (uuid),
-    CONSTRAINT Account_UNIQUE_1 UNIQUE KEY (email)
+    CONSTRAINT Account_UNIQUE_1 UNIQUE KEY (email),
+    CONSTRAINT Account_UNIQUE_TOKEN UNIQUE KEY (passwordResetToken)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
