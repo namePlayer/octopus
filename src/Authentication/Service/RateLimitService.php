@@ -9,6 +9,8 @@ use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use DateTime;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 
 class RateLimitService
 {
@@ -87,7 +89,7 @@ class RateLimitService
     /**
      * Stellt sicher, dass die Rate-Limit-Tabelle existiert
      */
-    protected function ensureTableExists(\PDOConnection $conn): void
+    protected function ensureTableExists(Connection $conn): void
     {
         $sql = "
             CREATE TABLE IF NOT EXISTS auth_password_reset_attempts (

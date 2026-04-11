@@ -22,12 +22,11 @@ use App\Authentication\Exception\AccountEmailIsInvalidException;
 use App\Authentication\Exception\PasswordToShortException;
 use App\Authentication\Exception\AccountEmailIsAlreadyUsedException;
 use Monolog\Logger;
-use App\Authentication\Service\PasswordResetTokenService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use League\Plates\Engine;
 
-class ForgotPasswordController
+class ForgotPasswordController extends \App\Base\Controller\HtmlController
 {
     public function __construct(
         private readonly EmailService $emailService,
