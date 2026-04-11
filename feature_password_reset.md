@@ -3,7 +3,23 @@
 ## Übersicht
 Implementierung einer vollständigen Passwort-Reset-Funktionalität für das Authentifizierungssystem.
 
-**Zustand:** Not gestartet
+### Projekt-Status
+Gesamte Liste von Aufgaben:
+
+| Aufgabe                                                            | Status   |
+|--------------------------------------------------------------------|----------|
+| 1. Datenbank-Erweiterung                                            | ✅ |
+| 2. PasswordResetTokenService erstellen                              | ✅  |
+| 3. EmailService erstellen                                            | ✅ |
+| 4. EmailTemplate erstellen                                           | ✅ |
+| 5. ForgotPasswordController erstellen                                | ✅  |
+| 6. ResetPasswordController erstellen                                 | ⬜  |
+| 7. Exception-Klassen erstellen                                        | ✅ |
+| 7.5 DI Container anpassen                                            | ⬜  |
+| 8. Router Konfiguration anpassen                                     | ⬜  |
+| 9. Login-Seite anpassen                                              | ⬜  |
+| 10. Sicherheitsmaßnahmen (Rate-Limiting)                             | ⬜  |
+
 
 ## Todo Liste
 
@@ -25,7 +41,7 @@ Implementierung einer vollständigen Passwort-Reset-Funktionalität für das Aut
 
 ---
 
-- [ ] **2. PasswordResetTokenService erstellen**
+- [x] **2. PasswordResetTokenService erstellen**
 
   **Zusammenfassung:**
   Service für die Verwaltung von Passwort-Reset-Token mit Generierung, Validierung und Expiration.
@@ -95,7 +111,7 @@ Implementierung einer vollständigen Passwort-Reset-Funktionalität für das Aut
 
 ---
 
-- [ ] **4. EmailTemplate erstellen**
+- [x] **4. EmailTemplate erstellen**
 
   **Zusammenfassung:**
   HTML-Vorlage für die Passwort-Reset-E-Mail.
@@ -321,19 +337,3 @@ Implementierung einer vollständigen Passwort-Reset-Funktionalität für das Aut
 
 ---
 
-### Projekt-Status
-Gesamte Liste von Aufgaben:
-
-| Aufgabe                                                            | Status   |
-|--------------------------------------------------------------------|----------|
-| 1. Datenbank-Erweiterung                                            | ✅ |
-| 2. PasswordResetTokenService erstellen                              | ⬜  |
-| 3. EmailService erstellen                                            | ✅ |
-| 4. EmailTemplate erstellen                                           | ✅ |
-| 5. ForgotPasswordController erstellen                                | ⬜  |
-| 6. ResetPasswordController erstellen                                 | ⬜  |
-| 7. Exception-Klassen erstellen                                        | ✅ |
-| 7.5 DI Container anpassen                                            | ⬜  |
-| 8. Router Konfiguration anpassen                                     | ⬜  |
-| 9. Login-Seite anpassen                                              | ⬜  |
-| 10. Sicherheitsmaßnahmen (Rate-Limiting)                             | ⬜  |
