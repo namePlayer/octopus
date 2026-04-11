@@ -15,10 +15,12 @@ use Doctrine\DBAL\DriverManager;
 class RateLimitService
 {
     protected LoggerInterface $logger;
+    protected Connection $connection;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, Connection $connection)
     {
         $this->logger = $logger;
+        $this->connection = $connection;
     }
 
     public function checkRateLimit(string $email): bool
