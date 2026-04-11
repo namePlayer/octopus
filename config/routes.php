@@ -26,14 +26,14 @@ $router->post('/authentication/login', 'App\Authentication\Controller\LoginContr
     ->setHost($_ENV['SOFTWARE_HOST']);
 
 # Passwort-Reset Routes
-$router->get('/authentication/forgot-password', 'App\Authentication\Controller\ForgotPasswordController:viewForgotPasswordForm')
+$router->get('/authentication/forgot-password', 'App\Authentication\Controller\ForgotPasswordController::viewForgotPasswordForm')
     ->setHost($_ENV['SOFTWARE_HOST']);
-$router->post('/authentication/forgot-password', 'App\Authentication\Controller\ForgotPasswordController:requestPasswordReset')
+$router->post('/authentication/forgot-password', 'App\Authentication\Controller\ForgotPasswordController::requestPasswordReset')
     ->setHost($_ENV['SOFTWARE_HOST']);
 
-$router->get('/authentication/reset/{token}', 'App\Authentication\Controller\ResetPasswordController:viewResetPasswordForm')
+$router->get('/authentication/reset/{token}', 'App\Authentication\Controller\ResetPasswordController::viewResetPasswordForm')
     ->setHost($_ENV['SOFTWARE_HOST']);
-$router->post('/authentication/reset/{token}', 'App\Authentication\Controller\ResetPasswordController:resetPassword')
+$router->post('/authentication/reset/{token}', 'App\Authentication\Controller\ResetPasswordController::resetPassword')
     ->setHost($_ENV['SOFTWARE_HOST']);
 
 $response = $router->dispatch($request);
