@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Base\Service;
 
 use App\Base\Exception\IllegalCharacterException;
+use App\Base\Exception\IllegalPathException;
 use App\Base\Exception\TranslationLocaleWasNotFoundException;
 use App\Base\Interface\TranslationInterface;
 use Monolog\Logger;
@@ -19,7 +20,6 @@ final class TranslationService implements TranslationInterface
         private readonly Logger $logger,
     )
     {
-        $this->loadTranslation($this->defaultLocale);
     }
 
     public function translate(string $key, array $params = [], ?string $locale = null): string
@@ -27,13 +27,16 @@ final class TranslationService implements TranslationInterface
         if(is_null($locale)) {
             $locale = $this->defaultLocale;
         }
-        $this->loadTranslation($locale);
+
+        if(!isset($this->translations[$locale])) {
+            $this->loadTranslation($locale);
+        }
 
         $index = explode('.', $key);
         $translation = $this->translations[$locale];
 
         foreach ($index as $value) {
-            if(!array_key_exists($value, $translation)) {
+            if(!isset($translation[$value])) {
                 $translation = $key;
                 break;
             }
@@ -41,26 +44,25 @@ final class TranslationService implements TranslationInterface
         }
 
         if(!is_string($translation)) {
+            $this->logger->warning('Translation key does not resolve to a valid string', [
+                'key' => $key, 'locale' => $locale
+            ]);
             $translation = $key;
         }
 
-        foreach ($params as $param => $value) {
-            $translation = str_replace($param, $value, $translation);
-        }
-
-        return $translation;
+        return str_replace(
+            array_keys($params),
+            array_values($params),
+            $translation
+        );
     }
 
     private function loadTranslation(string $locale): void
     {
-        if(preg_match('/^[a-zA-Z_\-]+$/', $locale) === 0)
+        if(preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $locale) === 0)
         {
             $this->logger->error('Invalid character found in locale string. Only allowed are a-zA-z_-', ['locale' => $locale]);
             throw new IllegalCharacterException();
-        }
-
-        if(isset($this->translations[$locale])) {
-            return;
         }
 
         $translationPath = $this->translationDir . '/' . $locale . '.php';
@@ -69,6 +71,16 @@ final class TranslationService implements TranslationInterface
             $this->logger->error('Failed loading the active translation. The file was not found.', ['file' => $translationPath]);
             throw new TranslationLocaleWasNotFoundException($locale);
         }
+
+        if(str_starts_with(realpath($translationPath), realpath($this->translationDir)) === false) {
+            $this->logger->error('Possible path traversal detected. Stopping.', [
+                'expected' => realpath($this->translationDir),
+                'path' => realpath($translationPath),
+                'locale' => $locale
+            ]);
+            throw new IllegalPathException();
+        }
+
         $translations = include $translationPath;
         if(!is_array($translations))
         {
