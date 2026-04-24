@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Base\Service;
 
 use App\Base\Exception\IllegalCharacterException;
-use App\Base\Exception\IllegalPathException;
+use App\Base\Exception\PossiblePathTraversalException;
 use App\Base\Exception\TranslationLocaleWasNotFoundException;
 use App\Base\Interface\TranslationInterface;
 use Monolog\Logger;
@@ -61,24 +61,32 @@ final class TranslationService implements TranslationInterface
     {
         if(preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $locale) === 0)
         {
-            $this->logger->error('Invalid character found in locale string. Only allowed are a-zA-z_-', ['locale' => $locale]);
+            $this->logger->error('Invalid character found in locale string. Only allowed characters are a-z, A-z, _',
+                ['locale' => preg_replace('/[^\w\-]/', '', $locale)]);
             throw new IllegalCharacterException();
         }
 
-        $translationPath = $this->translationDir . '/' . $locale . '.php';
-        if(!file_exists($translationPath))
+        $translationDir = realpath($this->translationDir);
+        if($translationDir === false) {
+            $this->logger->error('An invalid path for the translations directory was configured', ['path' => $this->translationDir]);
+            throw new TranslationLocaleWasNotFoundException();
+        }
+        $translationPath = $translationDir . '/' . $locale . '.php';
+        $translationPath = realpath($translationPath);
+
+        if($translationPath === false)
         {
             $this->logger->error('Failed loading the active translation. The file was not found.', ['file' => $translationPath]);
             throw new TranslationLocaleWasNotFoundException($locale);
         }
 
-        if(str_starts_with(realpath($translationPath), realpath($this->translationDir)) === false) {
+        if(str_starts_with($translationPath, $translationDir) === false) {
             $this->logger->error('Possible path traversal detected. Stopping.', [
-                'expected' => realpath($this->translationDir),
-                'path' => realpath($translationPath),
+                'expected' => $translationDir,
+                'path' => $translationPath,
                 'locale' => $locale
             ]);
-            throw new IllegalPathException();
+            throw new PossiblePathTraversalException();
         }
 
         $translations = include $translationPath;
@@ -88,7 +96,6 @@ final class TranslationService implements TranslationInterface
             throw new TranslationLocaleWasNotFoundException($translationPath);
         }
         $this->translations[$locale] = $translations;
-        unset($translations);
     }
 
 }
