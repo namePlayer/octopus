@@ -26,6 +26,15 @@ $container->add(\App\Authentication\Controller\LoginController::class)
     ->addArgument(\App\Base\Service\CsrfProtectionService::class)
     ->addArgument(\App\Base\Service\AlertService::class);
 
+$container->add(\App\Authentication\Controller\PasswordResetController::class)
+    ->addArgument(\League\Plates\Engine::class)
+    ->addArgument(\App\Base\Service\AlertService::class)
+    ->addArgument(\App\Base\Service\CsrfProtectionService::class)
+    ->addArgument(\App\Base\Service\TranslationService::class)
+    ->addArgument(\App\Authentication\Validator\ForgotPasswordValidator::class)
+    ->addArgument(\App\Authentication\Service\PasswordResetService::class)
+    ->addArgument(\App\Authentication\Validator\PasswordResetValidator::class);
+
 #
 # Services
 #
@@ -38,6 +47,12 @@ $container->add(\App\Authentication\Service\AccountService::class)
 $container->add(\App\Authentication\Service\AuthenticationService::class)
     ->addArgument(\App\Authentication\Service\AccountService::class)
     ->addArgument(\App\Authentication\Service\PasswordService::class)
+    ->addArgument(\Monolog\Logger::class);
+
+$container->add(\App\Authentication\Service\PasswordResetService::class)
+    ->addArgument(\App\Authentication\Service\AccountService::class)
+    ->addArgument(\App\Authentication\Service\PasswordService::class)
+    ->addArgument(\App\Authentication\Table\AccountForgotPasswordTokenTable::class)
     ->addArgument(\Monolog\Logger::class);
 
 $container->add(\App\Base\Service\CacheService::class)
@@ -61,10 +76,20 @@ $container->add(\App\Authentication\Table\AccountTable::class)
     ->addArgument(\Doctrine\DBAL\Connection::class)
     ->addArgument(\Monolog\Logger::class);
 
+$container->add(\App\Authentication\Table\AccountForgotPasswordTokenTable::class)
+    ->addArgument(\Doctrine\DBAL\Connection::class)
+    ->addArgument(\Monolog\Logger::class);
+
 #
 # Validators
 #
 $container->add(\App\Authentication\Validator\RegistrationValueValidator::class);
+
+$container->add(\App\Authentication\Validator\ForgotPasswordValidator::class)
+    ->addArgument(\App\Software::MAXIMUM_EMAIL_LENGTH);
+
+$container->add(\App\Authentication\Validator\PasswordResetValidator::class)
+    ->addArgument($_ENV['APP_MINIMUM_PASSWORD_LENGTH']);
 
 #
 # Dependencies

@@ -28,6 +28,24 @@ class AccountTable extends AbstractTable
         }
     }
 
+    public function update(Account $account): bool
+    {
+        $queryBuilder = new QueryBuilder($this->query);
+        $queryResult = $queryBuilder->update($this->getTableName())->where('id = :id')
+            ->setParameter('id', $account->id);
+        foreach ($account->extract(false) as $column => $value) {
+            $queryResult->set($column, ':' . $column);
+            $queryResult->setParameter($column, $value);
+        }
+        try {
+            $queryResult->executeQuery();
+            return true;
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+            return false;
+        }
+    }
+
     public function findByUuid(string $uuid): ?Account
     {
         $queryBuilder = new QueryBuilder($this->query);
@@ -50,6 +68,21 @@ class AccountTable extends AbstractTable
             ->from($this->getTableName())
             ->where('email = :email')
             ->setParameter('email', $email)
+            ->fetchAssociative();
+        if($queryResult !== false)
+        {
+            return Account::hydrate($queryResult);
+        }
+        return null;
+    }
+
+    public function findById(int $id): ?Account
+    {
+        $queryBuilder = new QueryBuilder($this->query);
+        $queryResult = $queryBuilder->select('*')
+            ->from($this->getTableName())
+            ->where('id = :id')
+            ->setParameter('id', $id)
             ->fetchAssociative();
         if($queryResult !== false)
         {

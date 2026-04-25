@@ -15,3 +15,15 @@ CREATE TABLE db.Account (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_general_ci;
+
+-- db.AccountForgotPasswordTokenTable definition
+
+CREATE TABLE `AccountForgotPasswordToken` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `account` int(11) NOT NULL,
+    `token` varchar(50) NOT NULL,
+    `created` datetime NOT NULL,
+    `used` datetime DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `AccountForgotPasswordToken_UNIQUE` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

@@ -22,6 +22,25 @@ return [
             'registerHereLinkText' => 'Hier Registrieren',
             'forgotPassword' => 'Passwort vergessen?',
         ],
+        'forgotPassword' => [
+            'title' => 'Passwort vergessen',
+            'notForgot' => 'Doch nicht vergessen? {{loginHere}}',
+            'loginHereLinkText' => 'Hier anmelden',
+            'confirm' => 'Passwort zurücksetzen',
+            'messages' => [
+                'csrfFailure' => 'Aufgrund eines Fehlers in der CSRF Validierung kann die Anfrage nicht abgeschlossen werden.',
+            ]
+        ],
+        'resetPassword' => [
+            'title' => 'Passwort zurücksetzen',
+            'passwordResetInvalid' => 'Der Passwort Reset kann nicht durchgeführt werden. Möglicherweise wurde der Token bereits verwendet.',
+            'messages' => [
+                'success' => 'Dein Passwort wurde erfolgreich zurückgesetzt. Du kannst dich nun mit deinem neuen Passwort anmelden.',
+                'csrfFailure' => 'Aufgrund eines Fehlers in der CSRF Validierung kann die Anfrage nicht abgeschlossen werden.',
+                'tokenWasInvalidated' => 'Der Token wurde bereits ungültig gemacht. Bitte fordere einen neuen Token an.',
+                'tokenStillValid' => 'Aufgrund eines Fehlers ist das Ändern des Passwortes fehlgeschlagen. Bitte versuche es erneut.'
+            ]
+        ],
         'general' => [
             'email' => 'E-Mail',
             'password' => 'Passwort',

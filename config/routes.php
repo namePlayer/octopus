@@ -25,5 +25,20 @@ $router->get('/authentication/login', 'App\Authentication\Controller\LoginContro
 $router->post('/authentication/login', 'App\Authentication\Controller\LoginController::login')
     ->setHost($_ENV['SOFTWARE_HOST']);
 
+$router->get('/authentication/forgotPassword', 'App\Authentication\Controller\PasswordResetController::viewPasswordForgot')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+$router->post('/authentication/forgotPassword', 'App\Authentication\Controller\PasswordResetController::forgotPassword')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+
+
+$router->get('/authentication/resetPassword/{token}', 'App\Authentication\Controller\PasswordResetController::viewPasswordReset')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+$router->get('/authentication/resetPassword', 'App\Authentication\Controller\PasswordResetController::viewPasswordReset')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+$router->post('/authentication/resetPassword/{token}', 'App\Authentication\Controller\PasswordResetController::passwordReset')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+$router->post('/authentication/resetPassword', 'App\Authentication\Controller\PasswordResetController::passwordReset')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+
 $response = $router->dispatch($request);
 new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter()->emit($response);

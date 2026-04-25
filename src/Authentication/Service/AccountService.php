@@ -5,6 +5,7 @@ namespace App\Authentication\Service;
 
 use App\Authentication\DTO\CreateAccountDTO;
 use App\Authentication\Exception\AccountInsertIntoDatabaseFailedException;
+use App\Authentication\Exception\AccountUpdateIntoDatabaseFailedException;
 use App\Authentication\Model\Account;
 use App\Authentication\Table\AccountTable;
 use Ramsey\Uuid\Uuid;
@@ -39,6 +40,14 @@ class AccountService
         return $account->uuid;
     }
 
+    public function update(Account $account): void
+    {
+        if($this->accountTable->update($account) === false)
+        {
+            throw new AccountUpdateIntoDatabaseFailedException();
+        }
+    }
+
     public function getUserByUuid(UuidInterface $uuid): ?Account
     {
         return $this->accountTable->findByUuid($uuid->toString());
@@ -47,6 +56,11 @@ class AccountService
     public function getUserByEmail(string $email): ?Account
     {
         return $this->accountTable->findByEmail($email);
+    }
+
+    public function getAccountById(int $id): ?Account
+    {
+        return $this->accountTable->findById($id);
     }
 
 }
