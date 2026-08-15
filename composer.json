@@ -1,7 +1,7 @@
 {
-    "name": "npcorenet/skeleton",
+    "name": "npcorenet/octopus",
     "type": "project",
-    "description": "The npcorenet Project skeleton",
+    "description": "The npcorenet Project skeleton with full authentication support",
     "autoload": {
         "psr-4": {
             "App\\": "src/"
@@ -15,21 +15,21 @@
         }
     ],
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.5",
         "ext-pdo": "*",
         "league/container": "^5.2.0",
-        "league/route": "^6.2.0",
+        "league/route": "^7.0.0",
         "league/plates": "^v3.6.0",
-        "laminas/laminas-diactoros": "^3.6.0",
+        "laminas/laminas-diactoros": "^3.8.0",
         "laminas/laminas-httphandlerrunner": "^2.13.0",
-        "symfony/dotenv": "^v7.4.4",
-        "symfony/console": "^v7.4.4",
+        "symfony/dotenv": "^v8.1.2",
+        "symfony/console": "^v8.1.4",
         "monolog/monolog": "^3.10.0",
-        "phpmailer/phpmailer": "^v6.12.0",
+        "phpmailer/phpmailer": "^v7.1.1",
         "ramsey/uuid": "^4.9",
         "doctrine/dbal": "^4.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^13.0"
+        "phpunit/phpunit": "^13.3.1"
     }
 }
