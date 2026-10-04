@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Authentication\Model;
+namespace App\Account\Model;
 
 use App\Software;
 use Ramsey\Uuid\Uuid;

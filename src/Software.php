@@ -30,6 +30,8 @@ class Software
     public const int MAXIMUM_EMAIL_LENGTH = 255;
     public const string ALERT_DEFAULT_TEMPLATE = 'element/alert';
     public const string ALERT_TRANSLATION_INDICATOR = 'translate:';
+    public const int JWT_TOKEN_LIFETIME_MINUTES = 60;
+    public const int JWT_REFRESH_TOKEN_LIFETIME_MINUTES = 10080;
 
     /**
      * @throws EnvironmentException

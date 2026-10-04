@@ -36,7 +36,6 @@ readonly class PasswordResetController
         private Engine                  $template,
         private AlertServiceInterface   $alertService,
         private CsrfProtectionService   $csrfProtectionService,
-        private TranslationService      $translationService,
         private ForgotPasswordValidator $forgotPasswordValidator,
         private PasswordResetService    $passwordResetService,
         private PasswordResetValidator $passwordResetValidator,

@@ -6,6 +6,7 @@ namespace App\Authentication\Controller;
 use App\Authentication\DTO\LoginAccountDTO;
 use App\Authentication\Exception\AccountInvalidLoginCredentialsEnteredException;
 use App\Authentication\Service\AuthenticationService;
+use App\Authentication\Service\AuthenticationSessionService;
 use App\Base\Exception\CsrfCheckFailedException;
 use App\Base\Http\HtmlResponse;
 use App\Base\Interface\AlertServiceInterface;
@@ -24,6 +25,7 @@ class LoginController
         private readonly AuthenticationService $authenticationService,
         private readonly CsrfProtectionInterface $csrfProtectionService,
         private readonly AlertServiceInterface $alertService,
+        private readonly AuthenticationSessionService $authenticationSessionService,
     )
     {
     }
@@ -44,8 +46,9 @@ class LoginController
             $post['loginPassword'] ?? '');
 
         try {
-            $this->csrfProtectionService->validateCsrfTokenForForm('login');
-            $this->authenticationService->login($loginAccountDto);
+            #$this->csrfProtectionService->validateCsrfTokenForForm('login');
+            $account = $this->authenticationService->login($loginAccountDto);
+            $this->authenticationSessionService->createSession($account);
             $this->alertService->addAlert('success', 'Credentials are correct, nice one :)');
         } catch (CsrfCheckFailedException $e) {
             $this->alertService->addAlert('danger', 'Das Benutzerkonto konnte aufgrund eines CSRF Fehlers nicht angelegt werden.');

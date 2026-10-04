@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use App\Base\Factory\JwtFactory;
 use League\Container\Container;
 
 $container = new Container();
@@ -24,16 +25,19 @@ $container->add(\App\Authentication\Controller\LoginController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\App\Authentication\Service\AuthenticationService::class)
     ->addArgument(\App\Base\Service\CsrfProtectionService::class)
-    ->addArgument(\App\Base\Service\AlertService::class);
+    ->addArgument(\App\Base\Service\AlertService::class)
+    ->addArgument(\App\Authentication\Service\AuthenticationSessionService::class);
 
 $container->add(\App\Authentication\Controller\PasswordResetController::class)
     ->addArgument(\League\Plates\Engine::class)
     ->addArgument(\App\Base\Service\AlertService::class)
     ->addArgument(\App\Base\Service\CsrfProtectionService::class)
-    ->addArgument(\App\Base\Service\TranslationService::class)
     ->addArgument(\App\Authentication\Validator\ForgotPasswordValidator::class)
     ->addArgument(\App\Authentication\Service\PasswordResetService::class)
     ->addArgument(\App\Authentication\Validator\PasswordResetValidator::class);
+
+$container->add(\App\Account\Controller\AccountController::class)
+    ->addArgument(\League\Plates\Engine::class);
 
 #
 # Services
@@ -64,6 +68,18 @@ $container->add(\App\Base\Service\CsrfProtectionService::class)
 $container->add(\App\Base\Service\AlertService::class)
     ->addArgument(\Monolog\Logger::class);
 
+$container->add(\App\Authentication\Service\AuthenticationSessionService::class)
+    ->addArgument(\Monolog\Logger::class)
+    ->addArgument(\App\Authentication\Service\JWTService::class);
+
+$container->add(\App\Authentication\Service\JWTService::class)
+    ->addArgument(\App\Authentication\Table\AccountJwtRefreshTokenTable::class)
+    ->addArgument(\App\Authentication\Service\AccountService::class)
+    ->addArgument(\Jose\Component\Core\JWK::class)
+    ->addArgument(\Jose\Component\Signature\JWSBuilder::class)
+    ->addArgument(\Jose\Component\Signature\JWSVerifier::class)
+    ->addArgument(\Jose\Component\Signature\Serializer\CompactSerializer::class);
+
 $container->add(\App\Base\Service\TranslationService::class)
     ->addArgument($_ENV['APP_DEFAULT_LANGUAGE'])
     ->addArgument(\App\Software::TRANSLATIONS_DIR)
@@ -77,6 +93,10 @@ $container->add(\App\Authentication\Table\AccountTable::class)
     ->addArgument(\Monolog\Logger::class);
 
 $container->add(\App\Authentication\Table\AccountForgotPasswordTokenTable::class)
+    ->addArgument(\Doctrine\DBAL\Connection::class)
+    ->addArgument(\Monolog\Logger::class);
+
+$container->add(\App\Authentication\Table\AccountJwtRefreshTokenTable::class)
     ->addArgument(\Doctrine\DBAL\Connection::class)
     ->addArgument(\Monolog\Logger::class);
 
@@ -95,6 +115,14 @@ $container->add(\App\Authentication\Validator\PasswordResetValidator::class)
 # Dependencies
 #
 $container->add(\Doctrine\DBAL\Connection::class, new \App\Base\Factory\DatabaseFactory()->connect());
+
+$container->add(\Jose\Component\Core\JWK::class, new \App\Base\Factory\JwtFactory()->getJwk());
+
+$container->add(\Jose\Component\Signature\JWSBuilder::class, new \App\Base\Factory\JwtFactory()->getJwsBuilder());
+
+$container->add(\Jose\Component\Signature\JWSVerifier::class, new \App\Base\Factory\JwtFactory()->getJwsVerifier());
+
+$container->add(\Jose\Component\Signature\Serializer\CompactSerializer::class, new \App\Base\Factory\JwtFactory()->getCompactSerializer());
 
 $container->add(\Monolog\Logger::class)
     ->addArgument('app')

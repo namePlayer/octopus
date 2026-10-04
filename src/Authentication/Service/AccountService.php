@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Authentication\Service;
 
+use App\Account\Model\Account;
 use App\Authentication\DTO\CreateAccountDTO;
 use App\Authentication\Exception\AccountInsertIntoDatabaseFailedException;
 use App\Authentication\Exception\AccountUpdateIntoDatabaseFailedException;
-use App\Authentication\Model\Account;
 use App\Authentication\Table\AccountTable;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

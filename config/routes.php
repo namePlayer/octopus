@@ -30,7 +30,6 @@ $router->get('/authentication/forgotPassword', 'App\Authentication\Controller\Pa
 $router->post('/authentication/forgotPassword', 'App\Authentication\Controller\PasswordResetController::forgotPassword')
     ->setHost($_ENV['SOFTWARE_HOST']);
 
-
 $router->get('/authentication/resetPassword/{token}', 'App\Authentication\Controller\PasswordResetController::viewPasswordReset')
     ->setHost($_ENV['SOFTWARE_HOST']);
 $router->get('/authentication/resetPassword', 'App\Authentication\Controller\PasswordResetController::viewPasswordReset')
@@ -38,6 +37,9 @@ $router->get('/authentication/resetPassword', 'App\Authentication\Controller\Pas
 $router->post('/authentication/resetPassword/{token}', 'App\Authentication\Controller\PasswordResetController::passwordReset')
     ->setHost($_ENV['SOFTWARE_HOST']);
 $router->post('/authentication/resetPassword', 'App\Authentication\Controller\PasswordResetController::passwordReset')
+    ->setHost($_ENV['SOFTWARE_HOST']);
+
+$router->get('/account', 'App\Account\Controller\AccountController::viewAccount')
     ->setHost($_ENV['SOFTWARE_HOST']);
 
 $response = $router->dispatch($request);

@@ -3,15 +3,13 @@ declare(strict_types=1);
 
 namespace App\Authentication\Service;
 
+use App\Account\Model\Account;
 use App\Authentication\DTO\CreateAccountDTO;
 use App\Authentication\DTO\LoginAccountDTO;
 use App\Authentication\Exception\AccountCreationFailedException;
 use App\Authentication\Exception\AccountEmailIsAlreadyUsedException;
 use App\Authentication\Exception\AccountInsertIntoDatabaseFailedException;
 use App\Authentication\Exception\AccountInvalidLoginCredentialsEnteredException;
-use App\Authentication\Exception\EmailCouldNotBeAssociatedWithAccountException;
-use App\Authentication\Exception\PasswordCouldNotBeAssociatedWithAccountException;
-use App\Authentication\Model\Account;
 use Monolog\Logger;
 
 class AuthenticationService

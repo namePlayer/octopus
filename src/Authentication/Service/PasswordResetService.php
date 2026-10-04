@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Authentication\Service;
 
+use App\Account\Model\Account;
 use App\Authentication\DTO\ForgotPasswordDTO;
 use App\Authentication\DTO\ResetForgotPasswordDTO;
 use App\Authentication\Exception\AccountForgotPasswordCreationFailedException;
@@ -13,7 +14,6 @@ use App\Authentication\Exception\PasswordResetFailedWithStillValidTokenException
 use App\Authentication\Exception\PasswordResetTokenCouldNotBeMarkedAsUsedException;
 use App\Authentication\Exception\PasswordResetTokenHasAlreadyBeenUsedException;
 use App\Authentication\Exception\PasswordResetTokenWasNotFoundException;
-use App\Authentication\Model\Account;
 use App\Authentication\Model\AccountForgotPasswordToken;
 use App\Authentication\Table\AccountForgotPasswordTokenTable;
 use DateTime;

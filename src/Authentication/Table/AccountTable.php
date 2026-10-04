@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Authentication\Table;
 
-use App\Authentication\Model\Account;
+use App\Account\Model\Account;
 use App\Base\Table\AbstractTable;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
