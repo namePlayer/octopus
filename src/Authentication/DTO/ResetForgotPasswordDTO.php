@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Authentication\DTO;
 
-class ResetForgotPasswordDTO
+readonly class ResetForgotPasswordDTO
 {
 
     public function __construct(

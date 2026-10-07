@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Authentication\DTO;
 
-readonly class JwtTokenAuthenticationDTO
+readonly class JwtAuthenticationValidDTO
 {
 
     public function __construct(
-        public string $token,
-        public int $expires
+        private bool $valid,
+        private bool $requiresRefresh
     )
     {
     }

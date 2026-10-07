@@ -3,13 +3,19 @@ declare(strict_types=1);
 
 namespace App\Authentication\Service;
 
+use App\Authentication\DTO\JwtAuthenticationValidDTO;
 use App\Authentication\DTO\JwtTokenAuthenticationDTO;
+use App\Authentication\Exception\AccountJwtAuthenticationInformationMismatchException;
+use App\Authentication\Exception\AccountJwtRefreshTokenExpiredException;
 use App\Authentication\Exception\AccountJwtRefreshTokenGenerationFailedException;
 use App\Authentication\Exception\AccountJwtRefreshTokenInvalidException;
+use App\Authentication\Exception\AccountJwtRequiresTokenRefreshException;
+use App\Authentication\Exception\AccountJwtTokenInvalidException;
 use App\Authentication\Exception\AccountWasNotFoundException;
 use App\Authentication\Model\AccountJwtRefreshToken;
 use App\Authentication\Table\AccountJwtRefreshTokenTable;
 use App\Software;
+use DateTime;
 use Jose\Component\Core\JWK;
 use Jose\Component\Signature\JWS;
 use Jose\Component\Signature\JWSBuilder;
@@ -38,6 +44,12 @@ class JWTService
         {
             throw new AccountJwtRefreshTokenInvalidException();
         }
+
+        if($refreshToken->expires <= new DateTime())
+        {
+            throw new AccountJwtRefreshTokenExpiredException();
+        }
+
         $account = $this->accountService->getAccountById($refreshToken->account);
         if($account === null)
         {
@@ -58,6 +70,33 @@ class JWTService
             ->addSignature($this->jsonWebTokenKey, ['alg' => 'HS256'])
             ->build();
         return new JwtTokenAuthenticationDTO($this->compactSerializer->serialize($jws), $payload['exp']);
+    }
+
+    public function verifyJwtToken(string $jwt, string $refreshToken): void
+    {
+        $jwtToken = $this->compactSerializer->unserialize($jwt);
+
+        $payload = json_decode($jwtToken->getPayload(), true);
+
+        if($payload['jti'] !== $refreshToken)
+        {
+            throw new AccountJwtAuthenticationInformationMismatchException("Refresh token does not match the payloads refresh token");
+        }
+
+        $refreshToken = $this->findRefreshTokenByToken($payload['jti']);
+        if($refreshToken === null)
+        {
+            throw new AccountJwtRefreshTokenInvalidException();
+        }
+
+        if($refreshToken->expires <= new DateTime())
+        {
+            throw new AccountJwtRefreshTokenExpiredException();
+        }
+
+        if($this->jwsVerifier->verifyWithKey($jwtToken, $this->jsonWebTokenKey, 0) === false) {
+            throw new AccountJwtTokenInvalidException();
+        }
     }
 
     public function generateJwtRefreshToken(int $accountId): AccountJwtRefreshToken

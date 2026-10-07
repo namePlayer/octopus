@@ -37,7 +37,8 @@ $container->add(\App\Authentication\Controller\PasswordResetController::class)
     ->addArgument(\App\Authentication\Validator\PasswordResetValidator::class);
 
 $container->add(\App\Account\Controller\AccountController::class)
-    ->addArgument(\League\Plates\Engine::class);
+    ->addArgument(\League\Plates\Engine::class)
+    ->addArgument(\App\Authentication\Service\AuthenticationSessionService::class);
 
 #
 # Services
@@ -116,13 +117,15 @@ $container->add(\App\Authentication\Validator\PasswordResetValidator::class)
 #
 $container->add(\Doctrine\DBAL\Connection::class, new \App\Base\Factory\DatabaseFactory()->connect());
 
-$container->add(\Jose\Component\Core\JWK::class, new \App\Base\Factory\JwtFactory()->getJwk());
+$jwtFactory = new JwtFactory();
 
-$container->add(\Jose\Component\Signature\JWSBuilder::class, new \App\Base\Factory\JwtFactory()->getJwsBuilder());
+$container->add(\Jose\Component\Core\JWK::class, $jwtFactory->getJwk());
 
-$container->add(\Jose\Component\Signature\JWSVerifier::class, new \App\Base\Factory\JwtFactory()->getJwsVerifier());
+$container->add(\Jose\Component\Signature\JWSBuilder::class, $jwtFactory->getJwsBuilder());
 
-$container->add(\Jose\Component\Signature\Serializer\CompactSerializer::class, new \App\Base\Factory\JwtFactory()->getCompactSerializer());
+$container->add(\Jose\Component\Signature\JWSVerifier::class, $jwtFactory->getJwsVerifier());
+
+$container->add(\Jose\Component\Signature\Serializer\CompactSerializer::class, $jwtFactory->getCompactSerializer());
 
 $container->add(\Monolog\Logger::class)
     ->addArgument('app')
