@@ -40,7 +40,9 @@ $router->post('/authentication/resetPassword', 'App\Authentication\Controller\Pa
     ->setHost($_ENV['SOFTWARE_HOST']);
 
 $router->get('/account', 'App\Account\Controller\AccountController::viewAccount')
-    ->setHost($_ENV['SOFTWARE_HOST']);
+    ->lazyMiddlewares([
+        \App\Authentication\Middleware\JwtAuthenticationMiddleware::class
+    ])->setHost($_ENV['SOFTWARE_HOST']);
 
 $response = $router->dispatch($request);
 new \Laminas\HttpHandlerRunner\Emitter\SapiEmitter()->emit($response);

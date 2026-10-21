@@ -21,6 +21,7 @@ class AccountController
 
     public function viewAccount(ServerRequestInterface $request): ResponseInterface
     {
+        var_dump($this->authenticationSessionService->isRefreshTokenValid());
         var_dump($this->authenticationSessionService->isJwtSessionValid());
 
         return new HtmlResponse($this->template->render('account/account'));

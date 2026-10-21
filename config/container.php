@@ -113,6 +113,12 @@ $container->add(\App\Authentication\Validator\PasswordResetValidator::class)
     ->addArgument($_ENV['APP_MINIMUM_PASSWORD_LENGTH']);
 
 #
+# Middlewares
+#
+$container->add(\App\Authentication\Middleware\JwtAuthenticationMiddleware::class)
+    ->addArgument(\App\Authentication\Service\AuthenticationSessionService::class);
+
+#
 # Dependencies
 #
 $container->add(\Doctrine\DBAL\Connection::class, new \App\Base\Factory\DatabaseFactory()->connect());
