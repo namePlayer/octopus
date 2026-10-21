@@ -74,7 +74,11 @@ class JWTService
 
     public function verifyJwtToken(string $jwt, string $refreshTokenValue): Account
     {
-        $jwtToken = $this->compactSerializer->unserialize($jwt);
+        try {
+            $jwtToken = $this->compactSerializer->unserialize($jwt);
+        } catch (\InvalidArgumentException) {
+            throw new AccountJwtTokenInvalidException();
+        }
 
         if($this->jwsVerifier->verifyWithKey($jwtToken, $this->jsonWebTokenKey, 0) === false) {
             throw new AccountJwtTokenInvalidException();
@@ -104,7 +108,7 @@ class JWTService
         }
 
         $account = $this->accountService->getAccountById($refreshToken->account);
-        if($account === null)
+        if($account === null || $payload['sub'] != $account->uuid)
         {
             throw new AccountWasNotFoundException();
         }

@@ -6,7 +6,6 @@ namespace App\Authentication\Middleware;
 use App\Account\Model\Account;
 use App\Authentication\Exception\AccountJwtAuthenticationFailedException;
 use App\Authentication\Exception\AccountJwtAuthenticationInformationMismatchException;
-use App\Authentication\Service\AccountService;
 use App\Authentication\Service\AuthenticationSessionService;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -39,7 +38,7 @@ class JwtAuthenticationMiddleware implements MiddlewareInterface
                 return $loginRedirectResponse;
             }
             try {
-                $this->authenticationSessionService->createJwtSession($this->authenticationSessionService->getRefreshToken());
+                $this->authenticationSessionService->createJwtSession($token);
             } catch (AccountJwtAuthenticationFailedException|AccountJwtAuthenticationInformationMismatchException $e) {
                 return $loginRedirectResponse;
             }

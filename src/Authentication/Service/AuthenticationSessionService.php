@@ -143,9 +143,12 @@ class AuthenticationSessionService
             "path" => "/",
             "secure" => true,
             "httponly" => true,
-            "samesite" => "None",
+            "samesite" => "Lax",
         ]);
-        $_COOKIE[$name] = $value;
+        if($setCookieRes)
+        {
+            $_COOKIE[$name] = $value;
+        }
         $this->logger->debug('Setting cookie in authentication session service', ['result' => $setCookieRes]);
         return $setCookieRes;
     }
